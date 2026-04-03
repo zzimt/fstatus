@@ -235,6 +235,10 @@ static int run_normal(bool stdout_flag) {
         }
     }
 
+    if (!display_status(stdout_flag, display)) {
+        goto cleanup;
+    }
+
     while (!run_normal_done) {
         int sig;
         int err = sigwait(&sigset, &sig);
