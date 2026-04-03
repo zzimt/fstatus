@@ -149,16 +149,14 @@ static int start_periodic_update_requests(int kill_fd) {
         return 1;
     }
 
+    const struct timespec ts = timespec_from_double(status_update_interval_seconds);
+
     while (true) {
         fd_set fds;
         FD_ZERO(&fds);
         FD_SET(kill_fd, &fds);
 
-        struct timeval tv;
-        tv.tv_sec = 1;
-        tv.tv_usec = 0;
-
-        int r = select(kill_fd + 1, &fds, NULL, NULL, &tv);
+        int r = pselect(kill_fd + 1, &fds, NULL, NULL, &ts, NULL);
         if (r < 0) {
             if (errno == EINTR) continue;
             show_error_errno("select failed");

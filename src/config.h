@@ -37,4 +37,6 @@ static const Format status_format[] = {
     FTEXT("[bat:"), FMOD(mod_battery), FTEXT("]"),
 };
 
+static const double status_update_interval_seconds = 1.0;
+
 #endif // FSTATUS_CONFIG_H_
