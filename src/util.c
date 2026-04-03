@@ -105,3 +105,71 @@ char* string_trim(char* str) {
 
     return str;
 }
+
+void stopwatch_update(Stopwatch* stopwatch) {
+    clock_gettime(CLOCK_MONOTONIC, &stopwatch->ts_now);
+}
+
+bool stopwatch_check(const Stopwatch* stopwatch, const struct timespec* ts) {
+    struct timespec diff = timespec_diff(&stopwatch->ts_now, &stopwatch->ts_from);
+    Ordering ord = timespec_cmp(&diff, ts);
+    if (ord == OGREATER || ord == OEQUAL) return true;
+    return false;
+}
+
+bool stopwatch_check_double(const Stopwatch* stopwatch, double seconds) {
+    struct timespec ts = timespec_from_double(seconds);
+    return stopwatch_check(stopwatch, &ts);
+}
+
+void stopwatch_reset(Stopwatch* stopwatch) {
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    stopwatch->ts_from = now;
+    stopwatch->ts_now = now;
+}
+
+struct timespec timespec_diff(const struct timespec* l, const struct timespec* r) {
+    struct timespec diff = {
+        .tv_sec = l->tv_sec - r->tv_sec,
+        .tv_nsec = l->tv_nsec - r->tv_nsec
+    };
+    if (diff.tv_nsec < 0) {
+        diff.tv_nsec += 1000000000;
+        diff.tv_sec--;
+    }
+    return diff;
+}
+
+Ordering timespec_cmp(const struct timespec* l, const struct timespec* r) {
+    if (l->tv_sec == r->tv_sec) {
+        if (l->tv_nsec == r->tv_nsec) {
+            return OEQUAL;
+        } else if (l->tv_nsec > r->tv_nsec) {
+            return OGREATER;
+        } else {
+            return OLESS;
+        }
+    } else if (l->tv_sec > r->tv_sec) {
+        return OGREATER;
+    } else {
+        return OLESS;
+    }
+}
+
+double timespec_to_double(const struct timespec* ts) {
+    return (double)ts->tv_sec 
+         + (double)ts->tv_nsec / 1e9;
+}
+
+struct timespec timespec_from_double(double seconds) {
+    struct timespec ts = {
+        .tv_sec = (time_t)seconds,
+        .tv_nsec = (time_t)((seconds - (long)seconds) * 1e9)
+    };
+    if (ts.tv_nsec >= 1000000000) {
+        ts.tv_nsec -= 1000000000;
+        ts.tv_sec++;
+    }
+    return ts;
+}

@@ -4,6 +4,9 @@
 
 #include "../util.h"
 
+static Stopwatch stopwatch = { 0 };
+float temp = 0.0f;
+
 static float poll_temp(const char* thermal_zone) {
     int temp;
     char path[128];
@@ -23,7 +26,14 @@ size_t Temperature_update(const void* config, char* buf, size_t size) {
         return 0;
     }
 
-    float temp = poll_temp(cfg->thermal_zone);
+    stopwatch_update(&stopwatch);
+
+    if (stopwatch_check_double(&stopwatch, cfg->min_update_interval_seconds)) {
+        temp = poll_temp(cfg->thermal_zone);
+
+        stopwatch_reset(&stopwatch);
+    }
+
     const char* fmt = cfg->left_align ? "%-*.*f" : "%*.*f";
     return snprintf(buf, size, fmt, cfg->spacing, cfg->decimal_places, temp / cfg->divide_by);
 }

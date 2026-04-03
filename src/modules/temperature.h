@@ -10,6 +10,7 @@ typedef struct {
     int decimal_places;
     int spacing;
     bool left_align;
+    double min_update_interval_seconds;
 } TemperatureConfig;
 
 #define Temperature_DEFAULT_CONFIG \
@@ -17,7 +18,8 @@ typedef struct {
     .divide_by = 1000, \
     .decimal_places = 0, \
     .spacing = 0, \
-    .left_align = false,
+    .left_align = false, \
+    .min_update_interval_seconds = 0.99,
 
 size_t Temperature_update(const void* config, char* buf, size_t size);
 

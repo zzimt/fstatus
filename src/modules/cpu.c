@@ -14,6 +14,8 @@ typedef struct CpuState {
     uint64_t work;
 } CpuState;
 
+static Stopwatch stopwatch = { 0 };
+
 static CpuState cpu_curr = { 0 };
 static CpuState cpu_prev = { 0 };
 float cpu_load = 0.0f;
@@ -98,7 +100,15 @@ static float poll_cpu(const char* stat_path) {
 
 size_t Cpu_update(const void* config, char* buf, size_t size) {
     const CpuConfig* cfg = (CpuConfig*)config;
-    float load = poll_cpu(cfg->stat_path);
+
+    stopwatch_update(&stopwatch);
+
+    if (stopwatch_check_double(&stopwatch, cfg->min_update_interval_seconds)) {
+        cpu_load = poll_cpu(cfg->stat_path);
+
+        stopwatch_reset(&stopwatch);
+    }
+
     const char* fmt = cfg->left_align ? "%-*.*f" : "%*.*f";
-    return string_print(buf, size, fmt, cfg->spacing, cfg->decimal_places, load * 100.0f);
+    return string_print(buf, size, fmt, cfg->spacing, cfg->decimal_places, cpu_load * 100.0f);
 }
