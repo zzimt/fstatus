@@ -8,6 +8,7 @@ Simple status bar.
 - [Usage](#usage)
     - [Building](#building)
     - [Installing](#installing)
+    - [Running](#running)
     - [Configuration](#configuration)
 - [License](#license)
 
