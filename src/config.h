@@ -7,6 +7,7 @@
 
 static const char* layout_cmd[] = { "xkb-switch", NULL };
 
+#include "modules/mem.h"
 #include "modules/temperature.h"
 #include "modules/cpu.h"
 #include "modules/volume.h"
@@ -14,6 +15,8 @@ static const char* layout_cmd[] = { "xkb-switch", NULL };
 #include "modules/time.h"
 #include "modules/battery.h"
 
+static const Module mod_mem =
+    MODULE(Mem, DEFAULTS);
 static const Module mod_temperature = 
     MODULE(Temperature, .thermal_zone = "thermal_zone5");
 static const Module mod_cpu = 
@@ -28,8 +31,9 @@ static const Module mod_battery =
     MODULE(Battery, .battery_name = "BAT1", .adapter_name = "ACAD");
 
 static const Format status_format[] = {
+    FTEXT("[m:"), FMOD(mod_mem), FTEXT("]"),
     FTEXT("[t:"), FMOD(mod_temperature), FTEXT("C]"),
-    FTEXT("[c:"), FMOD(mod_cpu), FTEXT("%]"),
+    FTEXT("[c:"), FMOD(mod_cpu), FTEXT("]"),
     FTEXT("[v:"), FMOD(mod_volume), FTEXT("]"),
     FTEXT("["), FMOD(mod_layout), FTEXT("]"),
     FTEXT("["), FMOD(mod_time), FTEXT("]"),
