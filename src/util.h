@@ -46,4 +46,6 @@ double timespec_to_double(const struct timespec* ts);
 
 struct timespec timespec_from_double(double seconds);
 
+bool read_command_output(const char** cmd, char* buf, size_t size);
+
 #endif // FSTATUS_UTIL_H
