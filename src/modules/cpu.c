@@ -109,6 +109,6 @@ size_t Cpu_update(const void* config, char* buf, size_t size) {
         stopwatch_reset(&stopwatch);
     }
 
-    const char* fmt = cfg->left_align ? "%-*.*f" : "%*.*f";
+    const char* fmt = cfg->left_align ? "%-*.*f%%" : "%*.*f%%";
     return string_print(buf, size, fmt, cfg->spacing, cfg->decimal_places, cpu_load * 100.0f);
 }
