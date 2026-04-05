@@ -104,7 +104,7 @@ size_t Cpu_update(const void* config, char* buf, size_t size) {
     stopwatch_update(&stopwatch);
 
     if (stopwatch_check_double(&stopwatch, cfg->min_update_interval_seconds)) {
-        cpu_load = poll_cpu(cfg->stat_path);
+        cpu_load = poll_cpu("/proc/stat");
 
         stopwatch_reset(&stopwatch);
     }

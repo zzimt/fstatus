@@ -5,7 +5,6 @@
 #include <stdbool.h>
 
 typedef struct {
-    const char* stat_path;
     int decimal_places;
     int spacing;
     bool left_align;
@@ -13,7 +12,6 @@ typedef struct {
 } CpuConfig;
 
 #define Cpu_DEFAULT_CONFIG \
-    .stat_path = "/proc/stat", \
     .decimal_places = 0, \
     .spacing = 0, \
     .left_align = false, \
